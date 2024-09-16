@@ -1,0 +1,496 @@
+body { 
+    font-family: Arial, sans-serif; 
+    margin: 0; 
+    padding: 0; 
+    background-color: #f0f0f0; 
+}
+
+.calendar { 
+    max-width: 1200px; 
+    margin: 20px auto; 
+    background-color: white; 
+    box-shadow: 0 0 20px rgba(0,0,0,0.1); 
+    border-radius: 12px; 
+    overflow: hidden; 
+}
+
+.header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 20px; 
+    border-bottom: 1px solid #e0e0e0; 
+}
+
+.nav-button { 
+    background-color: white; 
+    border: 1px solid #e0e0e0; 
+    padding: 5px 10px; 
+    border-radius: 4px; 
+    cursor: pointer; 
+}
+
+/* More specific selector for delete-event */
+.calendar-grid .time-slot .delete-event {
+    position: absolute;
+    top: 30px;            
+    right: 5px;           
+    padding: 2px 5px;    
+    font-size: 12px;      
+    background-color: #e19078;
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 10;         
+}
+
+/* More specific selector for edit-event */
+.calendar-grid .time-slot .edit-event {
+    position: absolute; 
+    top: 5px;             
+    right: 5px;           
+    padding: 2px 5px;    
+    font-size: 12px;       
+    background-color: #e1d578;
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 10;          
+}
+
+/* More specific selector for event-buttons */
+.calendar-grid .time-slot .event-buttons {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;     
+    flex-direction: column;
+    align-items: flex-end; 
+    justify-content: flex-start;
+    visibility: hidden;
+    z-index: 10;
+}
+
+/* More specific selector for the hover effect */
+.calendar-grid .time-slot .event:hover .event-buttons {
+    visibility: visible; 
+}
+
+.day-header.today {
+    color: #4CAF50;
+    background-color: #e8f5e9;
+    position: relative; /* Make the text white for better contrast */
+}
+
+#calendar-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: calc(100vh - 4px);
+    margin: 20px auto;
+    overflow: hidden; /* Add this to prevent double scrollbars */
+}
+
+.calendar-grid {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+    width: 100%;
+}
+
+.calendar-header {
+    display: grid;
+    grid-template-columns: auto repeat(7, 1fr);
+    grid-column: span 1;
+    width: 100%;
+    position: sticky;
+    background-color: white;
+    z-index: 2;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.scrollable-grid {
+    display: grid;
+    grid-template-columns: auto repeat(7, 1fr);
+    width: 100%;
+    overflow-y: auto;
+    flex-grow: 1;
+} 
+
+
+
+.time-row {
+    display: contents;
+}
+
+.day-header, .time-label {
+    background-color: #f8f9fa;
+    padding: 15px 15px;
+    text-align: center;
+    font-weight: bold;
+    color: #484848;
+    border-bottom: 2px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
+    /* min-width: 220px; */
+    width: 1fr;
+    /* grid-column: span 1; Span the full column */
+}
+
+/* .time-label {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    border-right: 2px solid #e0e0e0;
+} */
+.time-label {
+    padding: 15px 10px;
+    text-align: right;
+    font-weight: bold;
+    color: #484848;
+    border-right: 2px solid #e0e0e0;
+    position: sticky;
+    left: 0;
+    background-color: #f8f9fa;
+    z-index: 1;
+    width: auto;
+}
+
+.day-header.today::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #4CAF50;
+}
+
+.time-slot {
+    background-color: rgba(229, 229, 215, 0.833);
+    height: 60px;
+    width: 1fr;
+    min-height: 60px;
+    border-bottom: 1px solid #f0f0f0;
+    border-right: 1px solid #f0f0f0;
+    position: relative;
+    overflow: visible;
+    transition: background-color 0.3s ease;
+}
+
+.time-slot:hover {
+    background-color: #f8f9fa;
+}
+
+.day-header:first-child {
+    border-right: 2px solid #e0e0e0;
+}
+
+.day-header:last-child {
+    border-right: none;
+}
+
+.event {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    background-color: rgba(76, 175, 80, 0.8);
+    padding: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    z-index: 2;
+    color: rgb(239, 230, 230);
+    min-height: 25px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.event:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.event-title {
+    font-weight: bold;
+    margin-bottom: 2px;
+    z-index: 10;
+    min-height: 2em;
+    line-height: 1.2;
+    position: sticky;
+    top: 0;
+    left: 5px;
+    font-size: 14px;
+}
+
+.add-event {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 24px;
+    height: 24px;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+    background-color: #b9b8b8;
+    color: rgb(234, 247, 236);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-event:hover {
+    background-color: #45a049;
+    transform: scale(1.1);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 300px; 
+    max-width: 90%;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.event-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.event-form input,
+.event-form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.event-form textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.event-form button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.event-form button:hover {
+    background-color: #45a049;
+}
+
+.form-title {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 18px;
+    text-align: center;
+}
+/* New styles for the navigation container and its elements */
+.nav-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin: 10px auto 10px auto;
+    max-width: 400px; /* Adjust as needed */
+}
+
+.toggle-logout {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.logout {
+    position: absolute;
+    top: 10px; /* Adjust as necessary */
+    right: 10px;
+    bottom: 0;
+    padding: 0%;
+    margin: 0%;
+}
+
+#year-selector {
+    appearance: none;
+    background-color: #ffffff;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    max-width: 120px;
+    width: 100%;
+    margin-bottom: 10px; /* Add space below the year selector */
+}
+#year-selector:hover, #year-selector:focus {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+#prev-week, #next-week {
+    background-color: #b9b8b8;
+    color: rgb(234, 247, 236);
+    /* background-color: #4CAF50;
+    color: white; */
+    border: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+}
+
+#prev-week:hover, #next-week:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+#prev-week:active, #next-week:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+#prev-week::before, #next-week::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-top: 2px solid white;
+    border-right: 2px solid white;
+}
+
+#prev-week::before {
+    transform: rotate(-135deg);
+}
+
+#next-week::before {
+    transform: rotate(45deg);
+}
+
+.smart-form-button {
+    /* background-color: #4CAF50;
+    color: white; */
+    background-color: #b9b8b8;
+    color: rgb(234, 247, 236);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: auto; /* Push to the right */
+    margin-right: auto;
+    align-self: flex-start;
+    border: 2px solid #e0e0e0;
+    border-color: #4CAF50;
+}
+.smart-form-button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* New styles for layout adjustment */
+.year-and-week-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+}
+
+.week-toggle-container {
+    display: flex;
+    gap: 10px;
+}
+
+
+/* .spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+} */
+
+
+
+.modal-content {
+    position: relative;
+}
+
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.htmx-indicator {
+    width: 20px; /* Adjust width as needed */
+    height: 20px; /* Adjust height as needed */
+    opacity: 0;
+    transition: opacity 500ms ease-in;
+}
+.htmx-request .htmx-indicator{
+    opacity:1;
+}
