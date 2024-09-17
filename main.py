@@ -1,12 +1,15 @@
 # Must precede any llm module imports
 from langtrace_python_sdk import langtrace
-langtrace.init(api_key = '3ac1e9adf2635f67eed50c5957053826418d2dc8de07ba80c38f5f8638f77df6')
+from dotenv import load_dotenv
+load_dotenv()
+
+LANG_TRACE_API_KEY = os.getenv("LANG_TRACE_API_KEY")
+langtrace.init(api_key = LANG_TRACE_API_KEY)
 
 import os
 from datetime import datetime, timedelta, time
 import calendar
 import asyncio
-from dotenv import load_dotenv
 
 from fasthtml.common import *
 from fasthtml.oauth import GitHubAppClient, GoogleAppClient
@@ -17,7 +20,7 @@ from llama_index.llms.groq import Groq
 from llama_index.core.tools import BaseTool, FunctionTool
 from llama_index.core.agent import ReActAgent
 
-load_dotenv()
+
 
 css = Link(rel="stylesheet", href="static/styles.css")
 
